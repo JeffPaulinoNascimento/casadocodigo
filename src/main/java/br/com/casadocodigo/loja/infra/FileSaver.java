@@ -1,6 +1,5 @@
 package br.com.casadocodigo.loja.infra;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Part;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,8 +14,7 @@ import java.nio.file.Path;
 public class FileSaver {
 
     //public static final String SERVER_PATH = "c:/Users/JeffRapha/Documents/Intelij/Workspace"; //casa
-    public static final String SERVER_PATH = "c:/Users/Jefferson/Documents/Intelij/Workspace"; //trabalho
-
+    public static final String SERVER_PATH = "c:/Users/jefferson/Documents/Intelij/ConfigProjetoCasaDoCodigo"; //trabalho
     public static void transfer(Path source, OutputStream outputStream) {
         try {
             FileInputStream input = new FileInputStream(source.toFile());
