@@ -2,6 +2,7 @@ package br.com.casadocodigo.loja.models;
 
 import org.hibernate.validator.constraints.Email;
 
+import javax.inject.Named;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
