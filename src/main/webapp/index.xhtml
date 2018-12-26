@@ -3,7 +3,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:o="http://omnifaces.org/ui">
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
@@ -193,12 +194,13 @@
                         Mobile
                     </a>
                 </li>
-                <li class="colecoesDaCDC-colecaoItem">
-                    <a href="https://www.casadocodigo.com.br/collections/livros-de-desenvolvimento-web"
-                       class="colecoesDaCDC-colecaoLink">
-                        Web
-                    </a>
-                </li>
+                <c:if test="#{currentUser.hasRole('ADMIN')}">
+                    <li class="colecoesDaCDC-colecaoItem">
+                        <a href="#{request.contextPath}/livros/lista.xhtml" class="colecoesDaCDC-colecaoLink">
+                            Administração
+                        </a>
+                    </li>
+                </c:if>
 
             </nav>
             <form role="search" aria-labelledby="rotuloBuscaPrincipal" action="https://www.casadocodigo.com.br/search"
@@ -248,49 +250,49 @@
 
 <main>
 
-<o:cache scope="application">
-    <section class="vitrineDestaquinho container">
-        <h2 class="vitrineDestaquinho-titulo">Últimos lançamentos</h2>
-        <ul class="vitrineDestaquinho-lista">
-            <ui:repeat value="#{homeBeans.ultimosLancamentos()}" var="livro">
-                <li class="livroNaVitrine vitrineDestaquinho-produto">
-                    <a href="#{request.contextPath}/detalhe-livro.xhtml?id=#{livro.id}"
-                       class="livroNaVitrine-link"
-                       title="#{livro.titulo}">
-                        <div class="livroNaVitrine-imagemContainer" role="presentation">
-                            <img class="livroNaVitrine-imagem"
-                                 src="#{request.contextPath}/file/#{livro.capaPath}"
-                                 alt="#{livro.titulo}" title="#{livro.titulo}"/>
-                        </div>
-                        <span class="livroNaVitrine-nome">#{livro.titulo}</span>
-                    </a>
-                </li>
-            </ui:repeat>
-        </ul>
-    </section>
+    <o:cache scope="application">
+        <section class="vitrineDestaquinho container">
+            <h2 class="vitrineDestaquinho-titulo">Últimos lançamentos</h2>
+            <ul class="vitrineDestaquinho-lista">
+                <ui:repeat value="#{homeBeans.ultimosLancamentos()}" var="livro">
+                    <li class="livroNaVitrine vitrineDestaquinho-produto">
+                        <a href="#{request.contextPath}/detalhe-livro.xhtml?id=#{livro.id}"
+                           class="livroNaVitrine-link"
+                           title="#{livro.titulo}">
+                            <div class="livroNaVitrine-imagemContainer" role="presentation">
+                                <img class="livroNaVitrine-imagem"
+                                     src="#{request.contextPath}/file/#{livro.capaPath}"
+                                     alt="#{livro.titulo}" title="#{livro.titulo}"/>
+                            </div>
+                            <span class="livroNaVitrine-nome">#{livro.titulo}</span>
+                        </a>
+                    </li>
+                </ui:repeat>
+            </ul>
+        </section>
 
 
-    <h3 class="homeCall container">Todos os nossos livros</h3>
+        <h3 class="homeCall container">Todos os nossos livros</h3>
 
-    <section class="vitrineDaColecao container">
-        <ul class="vitrineDaColecao-lista">
-            <ui:repeat value="#{homeBeans.demaisLivros()}" var="livro">
-                <li class="livroNaVitrine vitrineDaColecao-produto">
-                    <a href="#{request.contextPath}/detalhe-livro.xhtml?id=#{livro.id}"
-                       class="livroNaVitrine-link"
-                       title="#{livro.titulo}">
-                        <div class="livroNaVitrine-imagemContainer" role="presentation">
-                            <img class="livroNaVitrine-imagem"
-                                 src="#{request.contextPath}/file/#{livro.capaPath}"
-                                 alt="#{livro.titulo}" title="#{livro.titulo}"/>
-                        </div>
-                        <span class="livroNaVitrine-nome">#{livro.titulo}</span>
-                    </a>
-                </li>
-            </ui:repeat>
-        </ul>
-    </section>
-</o:cache>
+        <section class="vitrineDaColecao container">
+            <ul class="vitrineDaColecao-lista">
+                <ui:repeat value="#{homeBeans.demaisLivros()}" var="livro">
+                    <li class="livroNaVitrine vitrineDaColecao-produto">
+                        <a href="#{request.contextPath}/detalhe-livro.xhtml?id=#{livro.id}"
+                           class="livroNaVitrine-link"
+                           title="#{livro.titulo}">
+                            <div class="livroNaVitrine-imagemContainer" role="presentation">
+                                <img class="livroNaVitrine-imagem"
+                                     src="#{request.contextPath}/file/#{livro.capaPath}"
+                                     alt="#{livro.titulo}" title="#{livro.titulo}"/>
+                            </div>
+                            <span class="livroNaVitrine-nome">#{livro.titulo}</span>
+                        </a>
+                    </li>
+                </ui:repeat>
+            </ul>
+        </section>
+    </o:cache>
 
     <div class="buscaDoRodape container" role="presentation">
         <form role="search" aria-labelledby="rotuloBuscaDoRodape" action="https://www.casadocodigo.com.br/search"
@@ -468,6 +470,17 @@
         </ul>
     </div>
 </footer>
+
+<script>
+    var canalDePromos = new WebSocket("ws://localhost:8080/#{request.contextPath}/canal/promos");
+    canalDePromos.onmessage = function(message){
+        console.log(message);
+        var novaPromo = JSON.parse(message.data);
+        if(confirm("Que tal aproveitar a promoção relampago " + novaPromo.titulo)){
+            document.location.href="#{request.contextPath}/livro-detalhe.xhtml?id=" + novaPromo.livroId;
+        }
+    };
+</script>
 
 <script type="text/javascript" src="#{request.contextPath}/resources/js/trackExternalLinks.js"></script>
 
