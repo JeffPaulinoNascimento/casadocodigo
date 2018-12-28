@@ -9,7 +9,8 @@ public class Promo {
 
     public String toJson() {
         JsonObjectBuilder promo = Json.createObjectBuilder();
-        promo.add("titulo", titulo)
+        promo.add("titulo", titulo).add("livroId", livro.getId());
+        return promo.build().toString();
     }
 
     public String getTitulo() {
@@ -28,5 +29,3 @@ public class Promo {
         this.livro = livro;
     }
 }
-
-AULA 05 06 07:57

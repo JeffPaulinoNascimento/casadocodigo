@@ -2,6 +2,9 @@ package br.com.casadocodigo.loja.websockets;
 
 import br.com.casadocodigo.loja.models.Promo;
 
+import javax.inject.Inject;
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
@@ -11,6 +14,7 @@ import java.util.List;
 @ServerEndpoint("/canal/promos")
 public class PromosEndpoint {
 
+    @Inject
     private UsuariosSession usuarios;
 
     @OnOpen
@@ -31,4 +35,11 @@ public class PromosEndpoint {
         }
 
     }
+    @OnClose
+    public void onClose(Session session, CloseReason closeReason){
+        usuarios.remove(session);
+        System.out.println(closeReason.getCloseCode());
+
+    }
+
 }
