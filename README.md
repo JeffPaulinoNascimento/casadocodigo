@@ -9,3 +9,4 @@ Foi utilizado para contrução desse projeto:
 - Liguagem Java com jsf
 - Servidor Wildfly
 - banco de dados mysql 5.5
+- hibernate para persistencia
